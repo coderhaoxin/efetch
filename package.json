@@ -1,0 +1,34 @@
+{
+  "name": "efetch",
+  "version": "0.0.0",
+  "description": "extend the window.fetch",
+  "main": "efetch.js",
+  "scripts": {
+    "test": "node_modules/karma/bin/karma start test/karma.conf.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/coderhaoxin/efetch.git"
+  },
+  "keywords": [
+    "extend",
+    "window",
+    "fetch"
+  ],
+  "files": [
+    "efetch.js"
+  ],
+  "author": "haoxin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/coderhaoxin/efetch/issues"
+  },
+  "homepage": "https://github.com/coderhaoxin/efetch",
+  "devDependencies": {
+    "jasmine-core": "^2.1.3",
+    "karma": "^0.12.28",
+    "karma-chrome-launcher": "^0.1.7",
+    "karma-coverage": "^0.2.7",
+    "karma-jasmine": "^0.3.3"
+  }
+}
