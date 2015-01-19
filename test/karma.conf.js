@@ -7,7 +7,7 @@ module.exports = function(config) {
     files: [
       'bower_components/fetch/fetch.js',
       'efetch.js',
-      'test/*.js'
+      'test/efetch.js'
     ],
 
     preprocessors: {
@@ -31,6 +31,8 @@ module.exports = function(config) {
     coverageReporter: {
       type: 'html',
       dir: 'coverage'
-    }
+    },
+
+    log: 'debug'
   });
 };

@@ -30,8 +30,23 @@ $ bower install es6-promise
 
 ### document
 
-```js
+  - set()
+  - send()
+  - form()
+  - query()
+  - sendFile()
 
+```js
+efetch[verb](url, options)
+.query()
+.set()
+.send()
+.then(function(res) {
+  // fetch response
+})
+.catch(function(err) {
+  // ...
+});
 ```
 
 ### License
