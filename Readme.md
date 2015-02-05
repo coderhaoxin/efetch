@@ -30,17 +30,82 @@ $ bower install es6-promise
 
 ### document
 
-  - set()
-  - send()
-  - form()
-  - query()
-  - sendFile()
+* set() - set http header
+* send() - send data,
+* query() - set query string
+* append() - append form data
 
 ```js
-efetch[verb](url, options)
-.query()
-.set()
-.send()
+efetch.get(url, options)
+.query({
+  type: 1
+})
+.query({
+  name: 'hello'
+})
+.then(function(res) {
+  // fetch response
+})
+.catch(function(err) {
+  // ...
+});
+
+// send json
+
+efetch.post(url, options)
+.send({
+  type: 1
+})
+.send({
+  name: 'hello'
+})
+.then(function(res) {
+  // fetch response
+})
+.catch(function(err) {
+  // ...
+});
+
+// send urlencoded
+
+efetch.post(url, options)
+.send('type=1')
+.send('name=hello')
+.then(function(res) {
+  // fetch response
+})
+.catch(function(err) {
+  // ...
+});
+
+// set header
+
+efetch.post(url, options)
+.set({
+  'content-type': 'application/json'
+})
+.send({
+  type: 1
+})
+.send({
+  name: 'hello'
+})
+.then(function(res) {
+  // fetch response
+})
+.catch(function(err) {
+  // ...
+});
+
+// send form (upload file)
+
+efetch.post(url, options)
+.append({
+  filename: 'user.png'
+})
+.append({
+  file: document.querySelector('input[type="file"]')files[0]
+})
 .then(function(res) {
   // fetch response
 })

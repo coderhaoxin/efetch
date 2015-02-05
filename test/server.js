@@ -1,6 +1,7 @@
 'use strict';
 
 var bodyParser = require('koa-bodyparser'),
+  multipart = require('co-multipart'),
   koa = require('koa');
 
 var app = koa();
@@ -15,9 +16,16 @@ app.use(function * (next) {
 });
 
 app.use(function * () {
+  if (this.request.is('multipart/*')) {
+    var parts = yield * multipart(this);
+    this.request.body = parts.field;
+    parts.dispose();
+  }
+
   this.body = {
     type: this.request.type,
     body: this.request.body,
+    headers: this.header,
     method: this.method,
     query: this.query
   };

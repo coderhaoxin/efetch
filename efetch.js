@@ -49,6 +49,7 @@
    */
   Request.prototype.set = function(key, value) {
     var headers = this.options.headers;
+
     if (typeof key === 'object') {
       for (var x in key) {
         headers[x] = key[x];
@@ -56,6 +57,7 @@
     } else {
       headers[key] = value;
     }
+
     return this;
   };
 
@@ -116,12 +118,25 @@
     return this;
   };
 
-  Request.prototype.form = function() {
-    // TODO
-  };
+  /**
+   * Append formData
+   *
+   * Examples:
+   *
+   *   .append(name, 'hello')
+   *
+   * @param {String} key
+   * @param {String} value
+   * @return {Request}
+   */
+  Request.prototype.append = function(key, value) {
+    if (!(this._body instanceof FormData)) {
+      this._body = new FormData();
+    }
 
-  Request.prototype.sendFile = function() {
-    // TODO
+    this._body.append(key, value);
+
+    return this;
   };
 
   memo(Request.prototype, 'promise', function() {
@@ -130,7 +145,9 @@
 
     try {
       if (['GET', 'HEAD', 'OPTIONS'].indexOf(options.method.toUpperCase()) === -1) {
-        if (isObject(this._body) && isJsonType(options['content-type'])) {
+        if (this._body instanceof FormData) {
+          options.body = this._body;
+        } else if (isObject(this._body) && isJsonType(options.headers['content-type'])) {
           options.body = JSON.stringify(this._body);
         } else if (isObject(this._body)) {
           options.body = stringify(this._body);

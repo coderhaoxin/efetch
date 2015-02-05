@@ -22,7 +22,7 @@ describe('## efetch', function() {
       expect(res.headers.get('Content-Type')).toEqual('application/json; charset=utf-8');
       return res.json();
     }).then(function(json) {
-      expect(Object.keys(json)).toEqual(['body', 'method', 'query']);
+      expect(Object.keys(json)).toEqual(['body', 'headers', 'method', 'query']);
       done();
     }).catch(function(err) {
       done(err);
@@ -137,19 +137,19 @@ describe('## efetch', function() {
       window.efetch
         .post(host)
         .set('content-type', 'application/x-www-form-urlencoded')
+        .set('x-efetch-test', 'xx')
         .send({
           name: 'haoxin'
-        })
-        .send({
+        }).send({
           pass: 123456
-        })
-        .then(function(res) {
+        }).then(function(res) {
           expect(res.status).toEqual(200);
           expect(res.headers.get('Content-Type')).toEqual('application/json; charset=utf-8');
           return res.json();
         }).then(function(json) {
           expect(json.method).toEqual('POST');
           expect(json.type).toEqual('application/x-www-form-urlencoded');
+          expect(json.headers['x-efetch-test']).toEqual('hello');
           expect(Object.keys(json.body)).toEqual(['name', 'pass']);
           done();
         }).catch(function(err) {
@@ -161,22 +161,44 @@ describe('## efetch', function() {
       window.efetch
         .post(host)
         .set({
-          'content-type': 'application/x-www-form-urlencoded'
-        })
-        .send({
+          'content-type': 'application/x-www-form-urlencoded',
+          'x-efetch-test': 'hello'
+        }).send({
           name: 'haoxin'
-        })
-        .send({
+        }).send({
           pass: 123456
-        })
-        .then(function(res) {
+        }).then(function(res) {
           expect(res.status).toEqual(200);
           expect(res.headers.get('Content-Type')).toEqual('application/json; charset=utf-8');
           return res.json();
         }).then(function(json) {
           expect(json.method).toEqual('POST');
           expect(json.type).toEqual('application/x-www-form-urlencoded');
+          expect(json.headers['x-efetch-test']).toEqual('hello');
           expect(Object.keys(json.body)).toEqual(['name', 'pass']);
+          done();
+        }).catch(function(err) {
+          done(err);
+        });
+    });
+  });
+
+  describe('# append', function() {
+    it('append(key, value)', function(done) {
+      window.efetch
+        .post(host)
+        .append('name', 'haoxin')
+        .append('desc', new Blob(['<a>me</a>'], {
+          type: 'text/html'
+        })).then(function(res) {
+          expect(res.status).toEqual(200);
+          expect(res.headers.get('Content-Type')).toEqual('application/json; charset=utf-8');
+          return res.json();
+        }).then(function(json) {
+          expect(json.method).toEqual('POST');
+          expect(json.type).toEqual('multipart/form-data');
+          expect(Object.keys(json.body)).toEqual(['name']);
+          expect(json.body.name).toEqual('haoxin');
           done();
         }).catch(function(err) {
           done(err);
