@@ -1,32 +1,14 @@
 [![NPM version][npm-img]][npm-url]
+<!--
 [![Build status][travis-img]][travis-url]
 [![Test coverage][coveralls-img]][coveralls-url]
+-->
 [![License][license-img]][license-url]
 [![Dependency status][david-img]][david-url]
 
 ### efetch
 
-extend the `window.fetch`,
-the polyfill for [fetch spec](https://fetch.spec.whatwg.org/)
-is [github/fetch](https://github.com/github/fetch).
-
-### polyfills
-
-* [window.fetch](https://github.com/github/fetch)
-
-```sh
-$ bower install fetch
-
-# or
-
-$ npm install github/fetch
-```
-
-* [es6 promise](https://github.com/components/es6-promise)
-
-```sh
-$ bower install es6-promise
-```
+extend the `fetch` - [fetch spec](https://fetch.spec.whatwg.org)
 
 ### document
 

@@ -1,7 +1,7 @@
 'use strict';
 
 describe('## efetch', function() {
-  var host = 'http://localhost:3000';
+  let host = 'http://localhost:3000';
 
   it('fetch, efetch should exist', function() {
     expect(typeof window.fetch).toEqual('function');
@@ -137,7 +137,7 @@ describe('## efetch', function() {
       window.efetch
         .post(host)
         .set('content-type', 'application/x-www-form-urlencoded')
-        .set('x-efetch-test', 'xx')
+        .set('x-efetch-test', 'hello')
         .send({
           name: 'haoxin'
         }).send({
@@ -159,7 +159,7 @@ describe('## efetch', function() {
 
     it('set(obj)', function(done) {
       window.efetch
-        .post(host)
+        .post(host + '/set')
         .set({
           'content-type': 'application/x-www-form-urlencoded',
           'x-efetch-test': 'hello'

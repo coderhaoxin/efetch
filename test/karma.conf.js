@@ -5,7 +5,6 @@ module.exports = function(config) {
     basePath: '..',
 
     files: [
-      'bower_components/fetch/fetch.js',
       'efetch.js',
       'test/efetch.js'
     ],

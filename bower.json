@@ -1,7 +1,7 @@
 {
   "name": "efetch",
   "main": "efetch.js",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "homepage": "https://github.com/coderhaoxin/efetch",
   "authors": [
     "haoxin <coderhaoxin@outlook.com>"
@@ -12,13 +12,8 @@
     "window",
     "fetch"
   ],
-  "ignore": [
-    ".travis.yml",
-    ".gitignore",
-    "test"
+  "files": [
+    "efetch.js"
   ],
-  "license": "MIT",
-  "devDependencies": {
-    "fetch": "~0.3.2"
-  }
+  "license": "MIT"
 }
