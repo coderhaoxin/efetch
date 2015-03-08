@@ -1,6 +1,6 @@
 {
   "name": "efetch",
-  "version": "0.2.0",
+  "private": true,
   "description": "extend the window.fetch",
   "main": "efetch.js",
   "scripts": {
@@ -25,13 +25,13 @@
   },
   "homepage": "https://github.com/coderhaoxin/efetch",
   "devDependencies": {
-    "co-multipart": "^0.1.1",
-    "jasmine-core": "^2.1.3",
-    "karma": "^0.12.28",
+    "co-multipart": "0",
+    "jasmine-core": "2",
+    "karma": "^0.12.31",
     "karma-chrome-launcher": "^0.1.7",
     "karma-coverage": "^0.2.7",
-    "karma-jasmine": "^0.3.3",
-    "koa": "^0.14.0",
-    "koa-bodyparser": "^1.3.0"
+    "karma-jasmine": "^0.3.5",
+    "koa": "0",
+    "koa-bodyparser": "1"
   }
 }

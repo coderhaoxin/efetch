@@ -2,7 +2,7 @@
   'use strict';
 
   if (!window.fetch) {
-    throw new Error('window.fetch is undefined, need the polyfill - https://github.com/github/fetch');
+    return console.error('fetch not support');
   }
 
   if (window.efetch) {
@@ -25,14 +25,21 @@
   function Request(method, url, options) {
     method = method.toUpperCase();
     if (typeof url !== 'string') {
-      return new TypeError('invalid url');
+      throw new TypeError('invalid url');
     }
     options = this.options = options || {};
     this.url = url;
     options.method = method;
-    // TODO: set all headers to lowerCase
-    options.headers = options.headers || {};
+    // fetch will normalize the headers
+    var headers = options.headers = options.headers || {};
     options.query = options.query || {};
+
+    for (var h in headers) {
+      if (h !== h.toLowerCase()) {
+        headers[h.toLowerCase()] = headers[h];
+        delete headers[h];
+      }
+    }
   }
 
   /**
@@ -51,11 +58,11 @@
     var headers = this.options.headers;
 
     if (typeof key === 'object') {
-      for (var x in key) {
-        headers[x] = key[x];
+      for (var k in key) {
+        headers[k.toLowerCase()] = key[k];
       }
     } else {
-      headers[key] = value;
+      headers[key.toLowerCase()] = value;
     }
 
     return this;
