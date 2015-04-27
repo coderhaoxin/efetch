@@ -34,6 +34,10 @@
     var headers = options.headers = options.headers || {};
     options.query = options.query || {};
 
+    if (options.noCache && method === 'GET') {
+      options.query.__q__ = randomString();
+    }
+
     for (var h in headers) {
       if (h !== h.toLowerCase()) {
         headers[h.toLowerCase()] = headers[h];
@@ -198,6 +202,10 @@
     return Object.keys(obj).map(function(key) {
       return key + '=' + obj[key];
     }).join('&');
+  }
+
+  function randomString() {
+    return Math.random().toString().slice(2);
   }
 
   function memo(object, property, getter) {

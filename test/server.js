@@ -7,7 +7,7 @@ var bodyParser = require('koa-bodyparser'),
 var app = koa();
 app.use(bodyParser());
 
-app.use(function * (next) {
+app.use(function*(next) {
   this.set('Access-Control-Allow-Origin', '*');
   this.set('Access-Control-Allow-Credentials', 'true');
   this.set('Access-Control-Request-Method', 'GET,POST,PUT,DELETE');
@@ -15,7 +15,7 @@ app.use(function * (next) {
   yield next;
 });
 
-app.use(function * () {
+app.use(function*() {
   if (this.request.is('multipart/*')) {
     var parts = yield * multipart(this);
     this.request.body = parts.field;

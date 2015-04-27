@@ -25,7 +25,7 @@ describe('## efetch', function() {
       expect(Object.keys(json)).toEqual(['body', 'headers', 'method', 'query']);
       done();
     }).catch(function(err) {
-      done(err);
+      done.fail(err);
     });
   });
 
@@ -45,11 +45,11 @@ describe('## efetch', function() {
           expect(Object.keys(json.query)).toEqual(['name', 'pass', 'type']);
           done();
         }).catch(function(err) {
-          done(err);
+          done.fail(err);
         });
     });
 
-    it('query() merge url', function(done) {
+    it('query() - merge url', function(done) {
       window.efetch(host + '?name=haoxin')
         .query({
           pass: 123456
@@ -63,7 +63,27 @@ describe('## efetch', function() {
           expect(Object.keys(json.query)).toEqual(['name', 'pass', 'type']);
           done();
         }).catch(function(err) {
-          done(err);
+          done.fail(err);
+        });
+    });
+
+    it('query() - no cache', function(done) {
+      window.efetch(host + '?name=haoxin', {
+          noCache: true
+        })
+        .query({
+          pass: 123456
+        }).query({
+          type: 1
+        }).then(function(res) {
+          expect(res.status).toEqual(200);
+          expect(res.headers.get('Content-Type')).toEqual('application/json; charset=utf-8');
+          return res.json();
+        }).then(function(json) {
+          expect(Object.keys(json.query)).toEqual(['name', '__q__', 'pass', 'type']);
+          done();
+        }).catch(function(err) {
+          done.fail(err);
         });
     });
   });
@@ -87,7 +107,7 @@ describe('## efetch', function() {
           expect(Object.keys(json.body)).toEqual(['name', 'pass', 'type']);
           done();
         }).catch(function(err) {
-          done(err);
+          done.fail(err);
         });
     });
 
@@ -106,7 +126,7 @@ describe('## efetch', function() {
           expect(Object.keys(json.body)).toEqual(['name', 'pass']);
           done();
         }).catch(function(err) {
-          done(err);
+          done.fail(err);
         });
     });
 
@@ -127,7 +147,7 @@ describe('## efetch', function() {
           expect(Object.keys(json.body)).toEqual([]);
           done();
         }).catch(function(err) {
-          done(err);
+          done.fail(err);
         });
     });
   });
@@ -153,7 +173,7 @@ describe('## efetch', function() {
           expect(Object.keys(json.body)).toEqual(['name', 'pass']);
           done();
         }).catch(function(err) {
-          done(err);
+          done.fail(err);
         });
     });
 
@@ -178,7 +198,7 @@ describe('## efetch', function() {
           expect(Object.keys(json.body)).toEqual(['name', 'pass']);
           done();
         }).catch(function(err) {
-          done(err);
+          done.fail(err);
         });
     });
   });
@@ -201,7 +221,7 @@ describe('## efetch', function() {
           expect(json.body.name).toEqual('haoxin');
           done();
         }).catch(function(err) {
-          done(err);
+          done.fail(err);
         });
     });
   });
