@@ -12,6 +12,12 @@
     "window",
     "fetch"
   ],
+  "ignore": [
+    "package.json",
+    "test",
+    "tool",
+    ".*"
+  ],
   "files": [
     "efetch.js"
   ],

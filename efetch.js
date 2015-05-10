@@ -1,49 +1,74 @@
 (function() {
-  'use strict';
+  'use strict'
 
   if (!window.fetch) {
-    return console.error('fetch not support');
+    return console.error('fetch not support')
   }
 
   if (window.efetch) {
-    console.warn('rewrite window.efetch');
+    console.warn('rewrite window.efetch')
   }
 
   window.efetch = function(url, options) {
-    return new Request('GET', url, options);
-  };
+    return new Request('GET', url, options)
+  }
 
-  var methods = ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT'];
+  var methods = ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT']
 
   methods.forEach(function(method) {
-    method = method.toLowerCase();
+    method = method.toLowerCase()
     window.efetch[method] = function(url, options) {
-      return new Request(method, url, options);
-    };
-  });
+      return new Request(method, url, options)
+    }
+  })
 
   function Request(method, url, options) {
-    method = method.toUpperCase();
+    method = method.toUpperCase()
     if (typeof url !== 'string') {
-      throw new TypeError('invalid url');
+      throw new TypeError('invalid url')
     }
-    options = this.options = options || {};
-    this.url = url;
-    options.method = method;
+    options = this.options = options || {}
+    this.url = url
+    options.method = method
+    // options.mode = options.mode || 'cors'
+    options.cache = options.cache || 'no-cache'
+    options.credentials = options.credentials || 'same-origin'
     // fetch will normalize the headers
-    var headers = options.headers = options.headers || {};
-    options.query = options.query || {};
-
-    if (options.noCache && method === 'GET') {
-      options.query.__q__ = randomString();
-    }
+    var headers = options.headers = options.headers || {}
+    options.query = options.query || {}
 
     for (var h in headers) {
       if (h !== h.toLowerCase()) {
-        headers[h.toLowerCase()] = headers[h];
-        delete headers[h];
+        headers[h.toLowerCase()] = headers[h]
+        delete headers[h]
       }
     }
+  }
+
+  /**
+   * Set Options
+   *
+   * Examples:
+   *
+   *   .config('credentials', 'omit')
+   *   .config({ credentials: 'omit' })
+   *
+   * @param {String|Object} key
+   * @param {Any} value
+   * @return {Request}
+   */
+  Request.prototype.config = function(key, value) {
+    var options = this.options
+
+    if (typeof key === 'object') {
+      for (var k in key) {
+        options[k] = key[k]
+      }
+    } else {
+      options[key] = value
+    }
+
+    return this
   }
 
   /**
@@ -59,18 +84,18 @@
    * @return {Request}
    */
   Request.prototype.set = function(key, value) {
-    var headers = this.options.headers;
+    var headers = this.options.headers
 
     if (typeof key === 'object') {
       for (var k in key) {
-        headers[k.toLowerCase()] = key[k];
+        headers[k.toLowerCase()] = key[k]
       }
     } else {
-      headers[key.toLowerCase()] = value;
+      headers[key.toLowerCase()] = value
     }
 
-    return this;
-  };
+    return this
+  }
 
   /**
    * Add query string
@@ -79,14 +104,14 @@
    * @return {Request}
    */
   Request.prototype.query = function(object) {
-    var query = this.options.query;
+    var query = this.options.query
 
     for (var i in object) {
-      query[i] = object[i];
+      query[i] = object[i]
     }
 
-    return this;
-  };
+    return this
+  }
 
   /**
    * Send data
@@ -100,34 +125,34 @@
    * @return {Request}
    */
   Request.prototype.send = function(body) {
-    var type = this.options.headers['content-type'];
+    var type = this.options.headers['content-type']
 
     if (isObject(body) && isObject(this._body)) {
       // merge body
       for (var key in body) {
-        this._body[key] = body[key];
+        this._body[key] = body[key]
       }
     } else if (typeof body === 'string') {
       if (!type) {
-        this.options.headers['content-type'] = type = 'application/x-www-form-urlencoded';
+        this.options.headers['content-type'] = type = 'application/x-www-form-urlencoded'
       }
 
       if (type.indexOf('x-www-form-urlencoded') !== -1) {
-        this._body = this._body ? this._body + '&' + body : body;
+        this._body = this._body ? this._body + '&' + body : body
       } else {
-        this._body = (this._body || '') + body;
+        this._body = (this._body || '') + body
       }
     } else {
-      this._body = body;
+      this._body = body
     }
 
     // default to json
     if (!type) {
-      this.options.headers['content-type'] = 'application/json';
+      this.options.headers['content-type'] = 'application/json'
     }
 
-    return this;
-  };
+    return this
+  }
 
   /**
    * Append formData
@@ -142,87 +167,95 @@
    */
   Request.prototype.append = function(key, value) {
     if (!(this._body instanceof FormData)) {
-      this._body = new FormData();
+      this._body = new FormData()
     }
 
-    this._body.append(key, value);
+    this._body.append(key, value)
 
-    return this;
-  };
+    return this
+  }
 
   memo(Request.prototype, 'promise', function() {
-    var options = this.options;
-    var url = this.url;
+    var options = this.options
+    var url = this.url
 
     try {
       if (['GET', 'HEAD', 'OPTIONS'].indexOf(options.method.toUpperCase()) === -1) {
         if (this._body instanceof FormData) {
-          options.body = this._body;
+          options.body = this._body
         } else if (isObject(this._body) && isJsonType(options.headers['content-type'])) {
-          options.body = JSON.stringify(this._body);
+          options.body = JSON.stringify(this._body)
         } else if (isObject(this._body)) {
-          options.body = stringify(this._body);
+          options.body = stringify(this._body)
         } else {
-          options.body = this._body;
+          options.body = this._body
         }
       }
 
       if (isObject(options.query)) {
         if (url.indexOf('?') >= 0) {
-          url += '&' + stringify(options.query);
+          url += '&' + stringify(options.query)
         } else {
-          url += '?' + stringify(options.query);
+          url += '?' + stringify(options.query)
         }
       }
     } catch (e) {
-      return Promise.reject(e);
+      return Promise.reject(e)
     }
 
-    return window.fetch(url, options);
-  });
+    return window.fetch(url, options)
+  })
 
   Request.prototype.then = function(resolve, reject) {
-    return this.promise.then(resolve, reject);
-  };
+    return this.promise.then(resolve, reject)
+  }
 
   Request.prototype.catch = function(reject) {
-    return this.promise.catch(reject);
-  };
+    return this.promise.catch(reject)
+  }
+
+  Request.prototype.json = function() {
+    return this.promise.then(function(res) {
+      return res.json()
+    })
+  }
+
+  Request.prototype.text = function() {
+    return this.promise.then(function(res) {
+      return res.text()
+    })
+  }
 
   function isObject(obj) {
     // not null
-    return obj && typeof obj === 'object';
+    return obj && typeof obj === 'object'
   }
 
   function isJsonType(contentType) {
-    return contentType && contentType.indexOf('application/json') === 0;
+    return contentType && contentType.indexOf('application/json') === 0
   }
 
   function stringify(obj) {
     return Object.keys(obj).map(function(key) {
-      return key + '=' + obj[key];
-    }).join('&');
-  }
-
-  function randomString() {
-    return Math.random().toString().slice(2);
+      return key + '=' + obj[key]
+    }).join('&')
   }
 
   function memo(object, property, getter) {
     Object.defineProperty(object, property, {
       get: function() {
-        this[property] = getter.call(this);
-        return this[property];
+        this[property] = getter.call(this)
+        return this[property]
       },
       set: function(val) {
         Object.defineProperty(this, property, {
           value: val,
           configurable: true,
           writable: true
-        });
+        })
       },
-      configurable: true,
-    });
-    return object;
+      configurable: true
+    })
+    return object
   }
-}());
+}())

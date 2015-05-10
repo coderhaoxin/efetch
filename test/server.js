@@ -1,25 +1,30 @@
-'use strict';
+'use strict'
 
-var bodyParser = require('koa-bodyparser'),
-  multipart = require('co-multipart'),
-  koa = require('koa');
+const bodyParser = require('koa-bodyparser')
+const multipart = require('co-multipart')
+const koa = require('koa')
 
-var app = koa();
-app.use(bodyParser());
+let app = koa()
+app.use(bodyParser())
 
 app.use(function*(next) {
-  this.set('Access-Control-Allow-Origin', '*');
-  this.set('Access-Control-Allow-Credentials', 'true');
-  this.set('Access-Control-Request-Method', 'GET,POST,PUT,DELETE');
-  this.set('Access-Control-Allow-Headers', 'Accept,Content-Type,Origin,X-Requested-With');
-  yield next;
-});
+  this.set('Access-Control-Max-Age', '60')
+  this.set('Access-Control-Allow-Origin', '*')
+  this.set('Access-Control-Allow-Credentials', 'true')
+  this.set('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE')
+  this.set('Access-Control-Allow-Headers', 'Accept,Content-Type,Origin,X-Requested-With,X-Efetch-Test')
+  yield next
+})
 
 app.use(function*() {
   if (this.request.is('multipart/*')) {
-    var parts = yield * multipart(this);
-    this.request.body = parts.field;
-    parts.dispose();
+    var parts = yield * multipart(this)
+    this.request.body = parts.field
+    parts.dispose()
+  }
+
+  if (this.path.includes('set-cookie')) {
+    this.cookies.set('hello', 'world')
   }
 
   this.body = {
@@ -28,7 +33,7 @@ app.use(function*() {
     headers: this.header,
     method: this.method,
     query: this.query
-  };
-});
+  }
+})
 
-app.listen(3000);
+app.listen(3000)

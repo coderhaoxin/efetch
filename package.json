@@ -1,15 +1,12 @@
 {
   "name": "efetch",
-  "private": true,
-  "description": "extend the window.fetch",
+  "version": "1.0.0",
+  "description": "extend the whatwg fetch, makes it easier to use",
   "main": "efetch.js",
   "scripts": {
     "test": "./tool test"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/coderhaoxin/efetch.git"
-  },
+  "repository": "coderhaoxin/efetch",
   "keywords": [
     "extend",
     "window",
@@ -20,18 +17,14 @@
   ],
   "author": "haoxin",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/coderhaoxin/efetch/issues"
-  },
-  "homepage": "https://github.com/coderhaoxin/efetch",
   "devDependencies": {
-    "co-multipart": "0",
-    "jasmine-core": "2",
-    "karma": "0",
-    "karma-chrome-launcher": "0",
-    "karma-coverage": "0",
-    "karma-jasmine": "0",
-    "koa": "0",
-    "koa-bodyparser": "1"
+    "co-multipart": "*",
+    "jasmine-core": "*",
+    "karma": "*",
+    "karma-chrome-launcher": "*",
+    "karma-coverage": "*",
+    "karma-jasmine": "*",
+    "koa": "*",
+    "koa-bodyparser": "*"
   }
 }
