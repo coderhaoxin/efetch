@@ -24,6 +24,7 @@ makes it easier to use.
 
 ```js
 {
+  mode: 'cors',
   cache: 'no-cache',
   credentials: 'same-origin'
 }

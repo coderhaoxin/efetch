@@ -30,7 +30,7 @@
     options = this.options = options || {}
     this.url = url
     options.method = method
-    // options.mode = options.mode || 'cors'
+    options.mode = options.mode || 'cors'
     options.cache = options.cache || 'no-cache'
     options.credentials = options.credentials || 'same-origin'
     // fetch will normalize the headers

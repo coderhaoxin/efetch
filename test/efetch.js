@@ -1,30 +1,38 @@
 'use strict'
 
 describe('## efetch', function() {
-  let host = 'http://localhost:3000'
+  function keysEqual(obj, keys) {
+    equal(Object.keys(obj), keys)
+  }
+  function equal(from, to) {
+    expect(from).toEqual(to)
+  }
+
+  const jsonType = 'application/json; charset=utf-8'
+  const host = 'http://localhost:3000'
 
   it('fetch, efetch should exist', function() {
-    expect(typeof window.fetch).toEqual('function')
-    expect(typeof window.efetch).toEqual('function')
+    equal(typeof window.fetch, 'function')
+    equal(typeof window.efetch, 'function')
   })
 
   it('invalid url', function() {
     try {
       window.efetch()
     } catch (e) {
-      expect(e.message).toEqual('invalid url')
+      equal(e.message, 'invalid url')
     }
   })
 
   it('efetch()', function(done) {
     window.efetch(host)
       .then(function(res) {
-        expect(res.status).toEqual(200)
-        expect(res.headers.get('Content-Type')).toEqual('application/json; charset=utf-8')
+        equal(res.status, 200)
+        equal(res.headers.get('Content-Type'), jsonType)
         return res.json()
       })
       .then(function(json) {
-        expect(Object.keys(json)).toEqual(['type', 'body', 'headers', 'method', 'query'])
+        keysEqual(json, ['type', 'body', 'headers', 'method', 'query'])
         done()
       })
       .catch(function(err) {
@@ -44,12 +52,12 @@ describe('## efetch', function() {
           type: 1
         })
         .then(function(res) {
-          expect(res.status).toEqual(200)
-          expect(res.headers.get('Content-Type')).toEqual('application/json; charset=utf-8')
+          equal(res.status, 200)
+          equal(res.headers.get('Content-Type'), jsonType)
           return res.json()
         })
         .then(function(json) {
-          expect(Object.keys(json.query)).toEqual(['name', 'pass', 'type'])
+          keysEqual((json.query), ['name', 'pass', 'type'])
           done()
         })
         .catch(function(err) {
@@ -66,12 +74,12 @@ describe('## efetch', function() {
           type: 1
         })
         .then(function(res) {
-          expect(res.status).toEqual(200)
-          expect(res.headers.get('Content-Type')).toEqual('application/json; charset=utf-8')
+          equal(res.status, 200)
+          equal(res.headers.get('Content-Type'), jsonType)
           return res.json()
         })
         .then(function(json) {
-          expect(Object.keys(json.query)).toEqual(['name', 'pass', 'type'])
+          keysEqual(json.query, ['name', 'pass', 'type'])
           done()
         })
         .catch(function(err) {
@@ -90,7 +98,7 @@ describe('## efetch', function() {
         })
         .json()
         .then(function(json) {
-          expect(Object.keys(json.query)).toEqual(['name', 'pass', 'type'])
+          keysEqual(json.query, ['name', 'pass', 'type'])
           done()
         }).catch(function(err) {
           done.fail(err)
@@ -108,9 +116,9 @@ describe('## efetch', function() {
         })
         .text()
         .then(function(text) {
-          expect(typeof text).toEqual('string')
+          equal(typeof text, 'string')
           let json = JSON.parse(text)
-          expect(Object.keys(json.query)).toEqual(['name', 'pass', 'type'])
+          keysEqual(json.query, ['name', 'pass', 'type'])
           done()
         }).catch(function(err) {
           done.fail(err)
@@ -119,17 +127,17 @@ describe('## efetch', function() {
   })
 
   describe('# config', function() {
-    it('set cookie', function(done) {
+    it('get cookie', function(done) {
       window.efetch(host + '/set-cookie')
-        // .config('mode', 'cors')
-        // .config('credentials', 'include')
+        .config('credentials', 'same-origin')
         .then(function(res) {
-          expect(res.status).toEqual(200)
-          expect(res.headers.get('Content-Type')).toEqual('application/json; charset=utf-8')
+          // note: whatever `same-origin` or not, fetch can't get header `set-cookie`
+          equal(res.status, 200)
+          equal(res.headers.get('Content-Type'), jsonType)
           return res.json()
         })
         .then(function(json) {
-          console.log(Object.keys(json.headers))
+          console.log(json)
           done()
         })
         .catch(function(err) {
@@ -137,19 +145,19 @@ describe('## efetch', function() {
         })
     })
 
-    it('get cookie', function(done) {
+    it('put cookie', function(done) {
       window.efetch(host + '/cookie')
         .config({
-          // mode: 'cors',
-          // credentials: 'include'
+          credentials: 'same-origin'
         })
         .then(function(res) {
-          expect(res.status).toEqual(200)
-          expect(res.headers.get('Content-Type')).toEqual('application/json; charset=utf-8')
+          equal(res.status, 200)
+          equal(res.headers.get('Content-Type'), jsonType)
           return res.json()
         })
         .then(function(json) {
-          console.log(Object.keys(json.headers))
+          // note: although set credentials with `same-origin`, still can't fetch with cookie
+          console.log(json)
           done()
         })
         .catch(function(err) {
@@ -170,14 +178,14 @@ describe('## efetch', function() {
           type: 1
         })
         .then(function(res) {
-          expect(res.status).toEqual(200)
-          expect(res.headers.get('Content-Type')).toEqual('application/json; charset=utf-8')
+          equal(res.status, 200)
+          equal(res.headers.get('Content-Type'), jsonType)
           return res.json()
         })
         .then(function(json) {
-          expect(json.method).toEqual('POST')
-          expect(json.type).toEqual('application/json')
-          expect(Object.keys(json.body)).toEqual(['name', 'pass', 'type'])
+          equal(json.method, 'POST')
+          equal(json.type, 'application/json')
+          keysEqual(json.body, ['name', 'pass', 'type'])
           done()
         })
         .catch(function(err) {
@@ -191,14 +199,14 @@ describe('## efetch', function() {
         .send('name=haoxin')
         .send('pass=123456')
         .then(function(res) {
-          expect(res.status).toEqual(200)
-          expect(res.headers.get('Content-Type')).toEqual('application/json; charset=utf-8')
+          equal(res.status, 200)
+          equal(res.headers.get('Content-Type'), jsonType)
           return res.json()
         })
         .then(function(json) {
-          expect(json.method).toEqual('POST')
-          expect(json.type).toEqual('application/x-www-form-urlencoded')
-          expect(Object.keys(json.body)).toEqual(['name', 'pass'])
+          equal(json.method, 'POST')
+          equal(json.type, 'application/x-www-form-urlencoded')
+          keysEqual(json.body, ['name', 'pass'])
           done()
         })
         .catch(function(err) {
@@ -216,14 +224,14 @@ describe('## efetch', function() {
           type: 1
         })
         .then(function(res) {
-          expect(res.status).toEqual(200)
-          expect(res.headers.get('Content-Type')).toEqual('application/json; charset=utf-8')
+          equal(res.status, 200)
+          equal(res.headers.get('Content-Type'), jsonType)
           return res.json()
         })
         .then(function(json) {
-          expect(json.method).toEqual('GET')
-          expect(json.type).toEqual('application/json')
-          expect(Object.keys(json.body)).toEqual([])
+          equal(json.method, 'GET')
+          equal(json.type, 'application/json')
+          keysEqual(json.body, [])
           done()
         })
         .catch(function(err) {
@@ -245,15 +253,15 @@ describe('## efetch', function() {
           pass: 123456
         })
         .then(function(res) {
-          expect(res.status).toEqual(200)
-          expect(res.headers.get('Content-Type')).toEqual('application/json; charset=utf-8')
+          equal(res.status, 200)
+          equal(res.headers.get('Content-Type'), jsonType)
           return res.json()
         })
         .then(function(json) {
-          expect(json.method).toEqual('POST')
-          expect(json.type).toEqual('application/x-www-form-urlencoded')
-          expect(json.headers['x-efetch-test']).toEqual('hello')
-          expect(Object.keys(json.body)).toEqual(['name', 'pass'])
+          equal(json.method, 'POST')
+          equal(json.type, 'application/x-www-form-urlencoded')
+          equal(json.headers['x-efetch-test'], 'hello')
+          keysEqual(json.body, ['name', 'pass'])
           done()
         })
         .catch(function(err) {
@@ -275,15 +283,15 @@ describe('## efetch', function() {
           pass: 123456
         })
         .then(function(res) {
-          expect(res.status).toEqual(200)
-          expect(res.headers.get('Content-Type')).toEqual('application/json; charset=utf-8')
+          equal(res.status, 200)
+          equal(res.headers.get('Content-Type'), jsonType)
           return res.json()
         })
         .then(function(json) {
-          expect(json.method).toEqual('POST')
-          expect(json.type).toEqual('application/x-www-form-urlencoded')
-          expect(json.headers['x-efetch-test']).toEqual('hello')
-          expect(Object.keys(json.body)).toEqual(['name', 'pass'])
+          equal(json.method, 'POST')
+          equal(json.type, 'application/x-www-form-urlencoded')
+          equal(json.headers['x-efetch-test'], 'hello')
+          keysEqual(json.body, ['name', 'pass'])
           done()
         })
         .catch(function(err) {
@@ -301,15 +309,15 @@ describe('## efetch', function() {
           type: 'text/html'
         }))
         .then(function(res) {
-          expect(res.status).toEqual(200)
-          expect(res.headers.get('Content-Type')).toEqual('application/json; charset=utf-8')
+          equal(res.status, 200)
+          equal(res.headers.get('Content-Type'), jsonType)
           return res.json()
         })
         .then(function(json) {
-          expect(json.method).toEqual('POST')
-          expect(json.type).toEqual('multipart/form-data')
-          expect(Object.keys(json.body)).toEqual(['name'])
-          expect(json.body.name).toEqual('haoxin')
+          equal(json.method, 'POST')
+          equal(json.type, 'multipart/form-data')
+          keysEqual(json.body, ['name'])
+          equal(json.body.name, 'haoxin')
           done()
         })
         .catch(function(err) {

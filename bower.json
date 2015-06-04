@@ -1,12 +1,12 @@
 {
   "name": "efetch",
   "main": "efetch.js",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "homepage": "https://github.com/coderhaoxin/efetch",
   "authors": [
     "haoxin <coderhaoxin@outlook.com>"
   ],
-  "description": "extend the window.fetch",
+  "description": "extend the whatwg fetch, makes it easier to use",
   "keywords": [
     "extend",
     "window",
