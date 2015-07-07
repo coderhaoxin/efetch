@@ -9,7 +9,7 @@
 extend the whatwg `fetch` - [fetch spec](https://fetch.spec.whatwg.org),
 makes it easier to use.
 
-### document
+### api
 
 * config - set options
 * set() - set http header
@@ -20,20 +20,28 @@ makes it easier to use.
 * text() - convert response body to `string`
 * json() - convert response body to `object`
 
+### Usage
+
+```js
+let request = new Fetch({
+  prefix: 'http://example.com/api/v1'
+})
+```
+
 * default options
 
 ```js
 {
+  prefix: '',
   mode: 'cors',
   cache: 'no-cache',
   credentials: 'same-origin'
 }
 ```
 
-### Usage
-
 ```js
-efetch.get(url, options)
+request
+  .get(path)
   .config({
     credentials: 'omit'
   })
@@ -52,7 +60,8 @@ efetch.get(url, options)
 
 // get json body
 
-efetch.get(url, options)
+request
+  .get(path)
   .query({
     type: 1
   })
@@ -69,7 +78,8 @@ efetch.get(url, options)
 
 // get text body
 
-efetch.get(url, options)
+request
+  .get(path)
   .query({
     type: 1
   })
@@ -86,7 +96,8 @@ efetch.get(url, options)
 
 // send json
 
-efetch.post(url, options)
+request
+  .post(path)
   .send({
     type: 1
   })
@@ -102,7 +113,8 @@ efetch.post(url, options)
 
 // send urlencoded
 
-efetch.post(url, options)
+request
+  .post(path)
   .send('type=1')
   .send('name=hello')
   .then(function(res) {
@@ -114,7 +126,8 @@ efetch.post(url, options)
 
 // send urlencoded
 
-efetch.post(url, options)
+request
+  .post(path)
   .set('content-type', 'application/x-www-form-urlencoded')
   .send({
     type: 1,
@@ -129,7 +142,8 @@ efetch.post(url, options)
 
 // set header
 
-efetch.post(url, options)
+request
+  .post(path)
   .set({
     'content-type': 'application/json'
   })
@@ -148,7 +162,8 @@ efetch.post(url, options)
 
 // send form (upload file)
 
-efetch.post(url, options)
+request
+  .post(path)
   .append({
     filename: 'user.png'
   })

@@ -11,39 +11,25 @@ describe('## efetch', function() {
   const jsonType = 'application/json; charset=utf-8'
   const host = 'http://localhost:3000'
 
-  it('fetch, efetch should exist', function() {
+  it('fetch, Fetch should exist', function() {
     equal(typeof window.fetch, 'function')
-    equal(typeof window.efetch, 'function')
+    equal(typeof window.Fetch, 'function')
   })
+
+  var request = new window.Fetch()
 
   it('invalid url', function() {
     try {
-      window.efetch()
+      request.get()
     } catch (e) {
       equal(e.message, 'invalid url')
     }
   })
 
-  it('efetch()', function(done) {
-    window.efetch(host)
-      .then(function(res) {
-        equal(res.status, 200)
-        equal(res.headers.get('Content-Type'), jsonType)
-        return res.json()
-      })
-      .then(function(json) {
-        keysEqual(json, ['type', 'body', 'headers', 'method', 'query'])
-        done()
-      })
-      .catch(function(err) {
-        done.fail(err)
-      })
-  })
-
   describe('# query', function() {
     it('query()', function(done) {
-      window
-        .efetch(host)
+      request
+        .get(host)
         .query({
           name: 'haoxin',
           pass: 123456
@@ -66,7 +52,8 @@ describe('## efetch', function() {
     })
 
     it('query() - merge url', function(done) {
-      window.efetch(host + '?name=haoxin')
+      request
+        .get(host + '?name=haoxin')
         .query({
           pass: 123456
         })
@@ -88,7 +75,8 @@ describe('## efetch', function() {
     })
 
     it('json()', function(done) {
-      window.efetch(host)
+      request
+        .get(host)
         .query({
           name: 'haoxin',
           pass: 123456
@@ -106,7 +94,8 @@ describe('## efetch', function() {
     })
 
     it('text()', function(done) {
-      window.efetch(host)
+      request
+        .get(host)
         .query({
           name: 'haoxin',
           pass: 123456
@@ -128,7 +117,8 @@ describe('## efetch', function() {
 
   describe('# config', function() {
     it('get cookie', function(done) {
-      window.efetch(host + '/set-cookie')
+      request
+        .get(host + '/set-cookie')
         .config('credentials', 'same-origin')
         .then(function(res) {
           // note: whatever `same-origin` or not, fetch can't get header `set-cookie`
@@ -146,7 +136,8 @@ describe('## efetch', function() {
     })
 
     it('put cookie', function(done) {
-      window.efetch(host + '/cookie')
+      request
+        .get(host + '/cookie')
         .config({
           credentials: 'same-origin'
         })
@@ -168,7 +159,7 @@ describe('## efetch', function() {
 
   describe('# send', function() {
     it('json', function(done) {
-      window.efetch
+      request
         .post(host)
         .send({
           name: 'haoxin',
@@ -194,7 +185,7 @@ describe('## efetch', function() {
     })
 
     it('urlencoded', function(done) {
-      window.efetch
+      request
         .post(host)
         .send('name=haoxin')
         .send('pass=123456')
@@ -214,8 +205,9 @@ describe('## efetch', function() {
         })
     })
 
-    it('get should ignore body', function(done) {
-      window.efetch(host)
+    it('get() should ignore body', function(done) {
+      request
+        .get(host)
         .send({
           name: 'haoxin',
           pass: 123456
@@ -242,7 +234,7 @@ describe('## efetch', function() {
 
   describe('# set', function() {
     it('set(key, value)', function(done) {
-      window.efetch
+      request
         .post(host)
         .set('content-type', 'application/x-www-form-urlencoded')
         .set('x-efetch-test', 'hello')
@@ -270,7 +262,7 @@ describe('## efetch', function() {
     })
 
     it('set(obj)', function(done) {
-      window.efetch
+      request
         .post(host + '/set')
         .set({
           'content-type': 'application/x-www-form-urlencoded',
@@ -302,7 +294,7 @@ describe('## efetch', function() {
 
   describe('# append', function() {
     it('append(key, value)', function(done) {
-      window.efetch
+      request
         .post(host)
         .append('name', 'haoxin')
         .append('desc', new Blob(['<a>me</a>'], {
@@ -318,6 +310,30 @@ describe('## efetch', function() {
           equal(json.type, 'multipart/form-data')
           keysEqual(json.body, ['name'])
           equal(json.body.name, 'haoxin')
+          done()
+        })
+        .catch(function(err) {
+          done.fail(err)
+        })
+    })
+  })
+
+  describe('# prefix', function() {
+    it('append(key, value)', function(done) {
+      let req = new window.Fetch({
+        prefix: host + '/prefix1'
+      })
+
+      req
+        .get('/prefix2/hello')
+        .then(function(res) {
+          equal(res.status, 200)
+          equal(res.headers.get('Content-Type'), jsonType)
+          return res.json()
+        })
+        .then(function(json) {
+          equal(json.method, 'GET')
+          equal(json.path, '/prefix1/prefix2/hello')
           done()
         })
         .catch(function(err) {

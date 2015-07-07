@@ -5,20 +5,28 @@
     return console.error('fetch not support')
   }
 
-  if (window.efetch) {
-    console.warn('rewrite window.efetch')
+  if (window.Fetch) {
+    console.warn('rewrite window.Fetch')
   }
 
-  window.efetch = function(url, options) {
-    return new Request('GET', url, options)
+  window.Fetch = Fetch
+
+  function Fetch(options) {
+    if (!(this instanceof Fetch)) {
+      return new Fetch(options)
+    }
+
+    this.options = options || {}
   }
 
   var methods = ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT']
 
   methods.forEach(function(method) {
     method = method.toLowerCase()
-    window.efetch[method] = function(url, options) {
-      return new Request(method, url, options)
+    Fetch.prototype[method] = function(url) {
+      // deep clone
+      var opts = JSON.parse(JSON.stringify(this.options))
+      return new Request(method, url, opts)
     }
   })
 
@@ -28,7 +36,8 @@
       throw new TypeError('invalid url')
     }
     options = this.options = options || {}
-    this.url = url
+    var prefix = options.prefix || ''
+    this.url = prefix + url
     options.method = method
     options.mode = options.mode || 'cors'
     options.cache = options.cache || 'no-cache'

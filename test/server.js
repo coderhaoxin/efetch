@@ -30,6 +30,7 @@ app.use(function*() {
   this.body = {
     type: this.request.type,
     body: this.request.body,
+    path: this.request.path,
     headers: this.header,
     method: this.method,
     query: this.query
