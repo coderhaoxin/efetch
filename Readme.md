@@ -1,3 +1,5 @@
+### Deprecated, move to [haoxins/fetch.io](https://github.com/haoxins/fetch.io)
+
 <!--
 [![Build status][travis-img]][travis-url]
 [![Test coverage][coveralls-img]][coveralls-url]
